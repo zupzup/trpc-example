@@ -1,6 +1,15 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import type { TRPCRouter } from '../../server/src/router';
+import { createReactQueryHooks } from '@trpc/react';
+
+const trpc = createReactQueryHooks<TRPCRouter>();
+
+const q = trpc.useQuery(['get', 1]);
+const mut = trpc.useMutation(['create']);
+mut.mutate({ name: 'yay' });
+
 
 // TODO: https://trpc.io/docs/react build example based on it
 

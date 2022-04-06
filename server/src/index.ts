@@ -1,35 +1,21 @@
-import express, { Application, Router, Request, Response } from 'express';
+import express, { Application } from 'express';
 import cors from 'cors';
-import * as trpc from '@trpc/server';
-
-const tRPCRouter = trpc.router();
-tRPCRouter.query('getCat', {
-    input: (val: unknown) => {
-        if (typeof val === 'string') return val;
-        throw new Error(`invalid input: ${typeof val}`);
-    },
-    async resolve(req) {
-        req.input;
-        return { id: req.input, name: 'Cat' }
-    }
-});
-
-// TODO: https://trpc.io/docs/express build example based on it
+import * as trpcExpress from '@trpc/server/adapters/express';
+import trpcRouter from './router';
 
 const app: Application = express();
-const route = Router();
 
-route.get("/bla/:num", async(req: Request, res: Response): Promise<any> => {
-    const num: number = parseInt(req.params.num);
-
-    return res.json({
-        num: num,
-    });
-});
+const createContext = ({}: trpcExpress.CreateExpressContextOptions) => ({})
 
 app.use(express.json());
 app.use(cors());
-app.use(route);
+app.use(
+    '/cat',
+    trpcExpress.createExpressMiddleware({
+        router: trpcRouter,
+        createContext,
+    }),
+);
 
 app.listen(8080, () => {
     console.log("Server running on port 8080");
