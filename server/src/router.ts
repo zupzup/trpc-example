@@ -9,8 +9,6 @@ const Cat = z.object({
 });
 const Cats = z.array(Cat);
 
-type Cat = z.infer<typeof Cat>;
-type Cats = z.infer<typeof Cats>;
 
 function newId(): number {
     return Math.floor(Math.random() * 10000)
@@ -54,5 +52,7 @@ const trpcRouter = trpc.router()
         }
     });
 
+export type Cat = z.infer<typeof Cat>;
+export type Cats = z.infer<typeof Cats>;
 export type TRPCRouter = typeof trpcRouter;
 export default trpcRouter;
